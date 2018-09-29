@@ -11,7 +11,7 @@ Please follow the official [Jupyter Code of Conduct](https://github.com/jupyter/
 conda create -c conda-forge -n jupyterlab-python-bytecode yarn nodejs jupyterlab
 
 # Activate it
-conda activate jupyterlab_python_code
+conda activate jupyterlab-python-code
 
 # Install the dependencies
 npm install
