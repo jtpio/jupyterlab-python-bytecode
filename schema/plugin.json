@@ -1,0 +1,29 @@
+{
+  "jupyter.lab.setting-icon-class": "jp-PythonIcon",
+  "jupyter.lab.setting-icon-label": "Python Bytecode",
+  "title": "Python Bytecode Viewer",
+  "description": "Live preview the Python Bytecode for a given Python file",
+  "properties": {
+    "kernelLanguagePreference": {
+      "title": "Kernel Preference",
+      "description": "Language Preference",
+      "default": "Python 3",
+      "type": "string"
+    },
+    "kernelAutoStart": {
+      "title": "Autostart Kernel",
+      "description": "Whether the kernel should start automatically",
+      "default": false,
+      "type": "boolean"
+    },
+    "panelInsertMode": {
+      "title": "Position of the bytecode panel",
+      "description": "Where the bytecode panel should be inserted",
+      "default": "right",
+      "enum": ["right", "bottom"],
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "type": "object"
+}

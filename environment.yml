@@ -1,0 +1,6 @@
+name: jupyterlab-python-bytecode
+channels:
+- conda-forge
+dependencies:
+- jupyterlab=0.34
+- python=3.6

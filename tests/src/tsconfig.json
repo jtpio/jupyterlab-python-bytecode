@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "jsx": "react",
+    "lib": ["dom", "es2015"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noEmitOnError": true,
+    "noImplicitAny": true,
+    "outDir": "../build",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "strictNullChecks": false,
+    "target": "es2015",
+    "typeRoots": ["../../src/@types", "../../node_modules/@types"]
+  },
+  "include": ["../../**/*.ts*"]
+}

@@ -1,0 +1,24 @@
+div.jp-RenderedPythonBytecode {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  text-align: left;
+  padding-left: var(--jp-code-padding);
+  font-size: var(--jp-code-font-size);
+  line-height: var(--jp-code-line-height);
+  font-family: var(--jp-code-font-family);
+  color: var(--jp-content-font-color1);
+  background: var(--jp-layout-color0);
+  border: none;
+  margin: 0px;
+  padding: 0px;
+  white-space: pre-wrap;
+  cursor: text;
+  overflow: auto;
+  height: inherit;
+}
+
+.jp-RenderedPythonBytecodeError {
+  color: red;
+  font-weight: bold;
+}
