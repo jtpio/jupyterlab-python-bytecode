@@ -63,7 +63,6 @@ export class PythonBytecodePanel extends Panel {
     this._view = new BytecodeView(this._model);
 
     this.addWidget(this._view);
-    this._session.initialize();
   }
 
   public async setup(): Promise<any> {
