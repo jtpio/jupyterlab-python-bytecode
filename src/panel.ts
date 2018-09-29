@@ -63,7 +63,6 @@ export class PythonBytecodePanel extends Panel {
     this._view = new BytecodeView(this._model);
 
     this.addWidget(this._view);
-    this._session.initialize();
   }
 
   public async setup(): Promise<any> {
@@ -102,6 +101,7 @@ export class PythonBytecodePanel extends Panel {
     this._fileContext.fileChanged.disconnect(this._getFileContent, this);
     this._fileContext.disposed.disconnect(this.dispose, this);
     this._themeManager.themeChanged.disconnect(this._changeTheme, this);
+    this._session.kernelChanged.disconnect(this._handleKernelChanged, this);
   }
 
   protected async _getFileContent(): Promise<any> {
