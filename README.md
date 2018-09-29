@@ -1,5 +1,6 @@
 # jupyterlab-python-bytecode
 
+[![Build Status](https://travis-ci.com/jtpio/jupyterlab-python-bytecode.svg?branch=master)](https://travis-ci.com/jtpio/jupyterlab-python-bytecode)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 JupyterLab extension to inspect Python Bytecode.
