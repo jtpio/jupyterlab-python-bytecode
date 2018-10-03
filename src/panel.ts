@@ -68,9 +68,11 @@ export class PythonBytecodePanel extends Panel {
   public async setup(): Promise<any> {
     await this._session.initialize();
     await this._session.ready;
-    await this._getFileContent();
-    await this._changeTheme();
     await this._setupListeners();
+
+    // do not block on first request
+    this._getFileContent();
+    this._changeTheme();
   }
 
   protected onCloseRequest(msg: Message): void {
