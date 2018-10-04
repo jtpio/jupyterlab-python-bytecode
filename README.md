@@ -7,7 +7,7 @@
 
 JupyterLab extension to inspect Python Bytecode.
 
-![screencast](./doc/screencast.gif)
+![screencast](./doc/for_while.gif)
 
 ## Prerequisites
 
@@ -37,7 +37,7 @@ dis.dis(code_to_evaluate)
 
 > Bytecode is an implementation detail of the CPython interpreter. No guarantees are made that bytecode will not be added, removed, or changed between versions of Python. Use of this module should not be considered to work across Python VMs or Python releases.
 
-### Example
+## Example
 
 For example, if the Python file contains the following lines:
 
@@ -74,3 +74,11 @@ Which will return (example for CPython 3.6.6):
              18 LOAD_CONST               1 (None)
              20 RETURN_VALUE
 ```
+
+### Comparing versions of CPython
+
+If you have several versions of Python installed on your machine (let's say in different conda environments), you can use the extension to check how the bytecode might differ.
+
+The following example illustrates the introduction of the new `CALL_METHOD` opcode introduced in CPython 3.7:
+
+![python_comparison](./doc/py36_py37_comparison.gif)
