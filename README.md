@@ -11,7 +11,7 @@ JupyterLab extension to inspect Python Bytecode.
 
 ## Prerequisites
 
-- JupyterLab 0.34
+- JupyterLab 0.35
 - `ipykernel`
 
 ## Installation
