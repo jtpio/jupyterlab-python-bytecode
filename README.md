@@ -1,7 +1,7 @@
 # jupyterlab-python-bytecode
 
 [![Build Status](https://travis-ci.com/jtpio/jupyterlab-python-bytecode.svg?branch=master)](https://travis-ci.com/jtpio/jupyterlab-python-bytecode)
-[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/jtpio/jupyterlab-python-bytecode/master?urlpath=lab)
+[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/jtpio/jupyterlab-python-bytecode/master?urlpath=lab/tree/doc/example.py)
 [![npm](https://img.shields.io/npm/v/jupyterlab-python-bytecode.svg)](https://www.npmjs.com/package/jupyterlab-python-bytecode)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
