@@ -14,6 +14,12 @@ JupyterLab extension to inspect Python Bytecode.
 - JupyterLab 0.35
 - `ipykernel`
 
+To install JupyterLab:
+
+```bash
+conda install -c conda-forge jupyterlab
+```
+
 ## Installation
 
 ```bash
