@@ -48,6 +48,8 @@ export class PythonBytecodePanel extends Panel {
 
     const { kernelLanguagePreference, kernelAutoStart } = userSettings;
 
+    name = name || widget.context.contentsModel.name;
+
     this._session = new ClientSession({
       manager: serviceManager.sessions,
       path,
