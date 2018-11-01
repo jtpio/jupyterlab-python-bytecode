@@ -27,7 +27,7 @@ export class PythonBytecodePanel extends Panel {
     super();
 
     const count = Private.count++;
-    this.id = `PythonBytecodePanel-${count}`;
+    this.id = `${PythonBytecodePanel.NAMESPACE}-${count}`;
     this.title.label = 'Python Bytecode';
     this.title.closable = true;
     this.title.icon = ICON_CLASS;
@@ -161,6 +161,8 @@ export class PythonBytecodePanel extends Panel {
 }
 
 export namespace PythonBytecodePanel {
+  export const NAMESPACE = 'PythonBytecodePanel';
+
   export interface IOptions {
     /**
      * The service manager used to get a list
