@@ -4,6 +4,8 @@ import {
   IThemeManager,
 } from '@jupyterlab/apputils';
 
+import { ActivityMonitor } from '@jupyterlab/coreutils';
+
 import { IDocumentManager } from '@jupyterlab/docmanager';
 
 import { DocumentRegistry } from '@jupyterlab/docregistry';
@@ -83,6 +85,16 @@ export class PythonBytecodePanel extends Panel {
   }
 
   protected _setupListeners() {
+    this._monitor = new ActivityMonitor({
+      signal: this._fileContext.model.contentChanged,
+      timeout: 500,
+    });
+
+    this._monitor.activityStopped.connect(
+      this._getModelContent,
+      this,
+    );
+
     this._fileContext.fileChanged.connect(
       this._getFileContent,
       this,
@@ -102,17 +114,28 @@ export class PythonBytecodePanel extends Panel {
   }
 
   protected _removeListeners() {
+    this._monitor.activityStopped.disconnect(this._getModelContent, this);
+    this._monitor.dispose();
     this._fileContext.fileChanged.disconnect(this._getFileContent, this);
     this._fileContext.disposed.disconnect(this.dispose, this);
     this._themeManager.themeChanged.disconnect(this._changeTheme, this);
     this._session.kernelChanged.disconnect(this._handleKernelChanged, this);
   }
 
+  protected _evaluateContent(content: string): Promise<any> {
+    const msg = this._model.formatKernelMessage(content);
+    return this._execute(msg);
+  }
+
+  protected async _getModelContent(): Promise<any> {
+    const content = this._fileContext.model.toString();
+    return this._evaluateContent(content);
+  }
+
   protected async _getFileContent(): Promise<any> {
     const path = this._fileContext.path;
     const file = await this._docManager.services.contents.get(path);
-    const msg = this._model.formatKernelMessage(file.content);
-    return this._execute(msg);
+    return this._evaluateContent(file.content);
   }
 
   protected async _execute(code: string): Promise<any> {
@@ -152,6 +175,7 @@ export class PythonBytecodePanel extends Panel {
     return this._session;
   }
 
+  private _monitor: ActivityMonitor<any, any> | null;
   private _fileContext: DocumentRegistry.IContext<DocumentRegistry.IModel>;
   private _docManager: IDocumentManager;
   private _themeManager: IThemeManager;
