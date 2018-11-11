@@ -164,8 +164,6 @@ let activateByteCodePlugin = async (
     command: CommandIDs.create,
     category: 'File Operations',
   });
-
-  console.log('JupyterLab extension jupyterlab-python-bytecode is activated!');
 };
 
 /**
