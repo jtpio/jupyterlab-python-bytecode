@@ -158,7 +158,6 @@ export class PythonBytecodePanel extends Panel {
   }
 
   dispose(): void {
-    console.log('dispose panel');
     // TODO: dispose session if last panel disposed?
     this._removeListeners();
     this._session.dispose();
