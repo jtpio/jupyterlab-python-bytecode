@@ -26,6 +26,12 @@ conda install -c conda-forge jupyterlab
 jupyter labextension install jupyterlab-python-bytecode
 ```
 
+## Features
+
+- Live Bytecode preview
+- Choose the kernel for a file (if not already started). This allows comparing the bytecode output for different versions of Python.
+- Check the `Avanced Settings Editor` to tweak some of the settings
+
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) to know how to contribute and setup a development environment.
