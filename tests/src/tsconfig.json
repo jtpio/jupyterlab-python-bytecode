@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "declaration": true,
+    "esModuleInterop": true,
     "jsx": "react",
     "lib": ["dom", "es2015"],
     "module": "commonjs",
@@ -15,5 +16,5 @@
     "target": "es2015",
     "typeRoots": ["../../src/@types", "../../node_modules/@types"]
   },
-  "include": ["../../**/*.ts*"]
+  "include": ["../../**/*.ts*", "../webpack.config.js"]
 }

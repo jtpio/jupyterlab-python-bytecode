@@ -63,6 +63,11 @@ export class PythonBytecodePanel extends Panel {
       },
     });
 
+    this._monitor = new ActivityMonitor({
+      signal: this._fileContext.model.contentChanged,
+      timeout: 500,
+    });
+
     this._model = new BytecodeModel();
     this._view = new BytecodeView(this._model);
 
@@ -85,16 +90,10 @@ export class PythonBytecodePanel extends Panel {
   }
 
   protected _setupListeners() {
-    this._monitor = new ActivityMonitor({
-      signal: this._fileContext.model.contentChanged,
-      timeout: 500,
-    });
-
     this._monitor.activityStopped.connect(
       this._getModelContent,
       this,
     );
-
     this._fileContext.fileChanged.connect(
       this._getFileContent,
       this,
@@ -103,22 +102,32 @@ export class PythonBytecodePanel extends Panel {
       this.dispose,
       this,
     );
-    this._themeManager.themeChanged.connect(
-      this._changeTheme,
-      this,
-    );
     this._session.kernelChanged.connect(
       this._handleKernelChanged,
       this,
     );
+
+    // TODO: make themeManager optional
+    if (this._themeManager) {
+      this._themeManager.themeChanged.connect(
+        this._changeTheme,
+        this,
+      );
+    }
   }
 
   protected _removeListeners() {
-    this._monitor.activityStopped.disconnect(this._getModelContent, this);
-    this._monitor.dispose();
-    this._fileContext.fileChanged.disconnect(this._getFileContent, this);
-    this._fileContext.disposed.disconnect(this.dispose, this);
-    this._themeManager.themeChanged.disconnect(this._changeTheme, this);
+    if (this._monitor) {
+      this._monitor.activityStopped.disconnect(this._getModelContent, this);
+      this._monitor.dispose();
+    }
+    if (this._fileContext) {
+      this._fileContext.fileChanged.disconnect(this._getFileContent, this);
+      this._fileContext.disposed.disconnect(this.dispose, this);
+    }
+    if (this._themeManager) {
+      this._themeManager.themeChanged.disconnect(this._changeTheme, this);
+    }
     this._session.kernelChanged.disconnect(this._handleKernelChanged, this);
   }
 
@@ -145,6 +154,9 @@ export class PythonBytecodePanel extends Panel {
   }
 
   protected _changeTheme() {
+    if (!this._themeManager) {
+      return;
+    }
     const isLight = this._themeManager.isLight(this._themeManager.theme);
     this._model.isLight = isLight;
     this._model.notify();
