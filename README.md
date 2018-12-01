@@ -7,7 +7,7 @@
 
 JupyterLab extension to inspect Python Bytecode.
 
-![screencast](./doc/for_while.gif)
+![screencast](./doc/live_update.gif)
 
 ## Prerequisites
 
@@ -94,3 +94,9 @@ If you have several versions of Python installed on your machine (let's say in d
 The following example illustrates the introduction of the new `CALL_METHOD` opcode introduced in CPython 3.7:
 
 ![python_comparison](./doc/py36_py37_comparison.gif)
+
+### Comparing for and while loops
+
+Original example from [Disassembling Python Bytecode, by Peter Goldsborough](http://www.goldsborough.me/python/low-level/2016/10/04/00-31-30-disassembling_python_bytecode/)
+
+![for_while](./doc/for_while.gif)
