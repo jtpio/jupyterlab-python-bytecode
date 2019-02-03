@@ -18,6 +18,11 @@ div.jp-RenderedPythonBytecode {
   height: inherit;
 }
 
+.jp-RenderedPythonBytecode pre[style] {
+  overflow-x: unset !important;
+  color: unset !important;
+}
+
 .jp-RenderedPythonBytecodeError {
   color: red;
   font-weight: bold;

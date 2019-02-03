@@ -4,6 +4,10 @@ import {
   IThemeManager,
 } from '@jupyterlab/apputils';
 
+import { IObservableMap } from '@jupyterlab/observables';
+
+import { CodeEditor } from '@jupyterlab/codeeditor';
+
 import { ActivityMonitor } from '@jupyterlab/coreutils';
 
 import { IDocumentManager } from '@jupyterlab/docmanager';
@@ -41,12 +45,14 @@ export class PythonBytecodePanel extends Panel {
       docManager,
       themeManager,
       userSettings,
+      selections,
     } = options;
 
     let widget = docManager.findWidget(path);
     this._fileContext = docManager.contextForWidget(widget);
     this._docManager = docManager;
     this._themeManager = themeManager;
+    this._selections = selections;
 
     const { kernelLanguagePreference, kernelAutoStart } = userSettings;
 
@@ -102,6 +108,10 @@ export class PythonBytecodePanel extends Panel {
       this.dispose,
       this,
     );
+    this._selections.changed.connect(
+      this._handleSelectionChanged,
+      this,
+    );
     this._session.kernelChanged.connect(
       this._handleKernelChanged,
       this,
@@ -127,6 +137,9 @@ export class PythonBytecodePanel extends Panel {
     }
     if (this._themeManager) {
       this._themeManager.themeChanged.disconnect(this._changeTheme, this);
+    }
+    if (this._selections) {
+      this._selections.changed.disconnect(this._handleSelectionChanged, this);
     }
     this._session.kernelChanged.disconnect(this._handleKernelChanged, this);
   }
@@ -169,6 +182,10 @@ export class PythonBytecodePanel extends Panel {
     }
   }
 
+  protected _handleSelectionChanged() {
+    console.log(this._selections);
+  }
+
   dispose(): void {
     // TODO: dispose session if last panel disposed?
     this._removeListeners();
@@ -190,6 +207,7 @@ export class PythonBytecodePanel extends Panel {
   private _fileContext: DocumentRegistry.IContext<DocumentRegistry.IModel>;
   private _docManager: IDocumentManager;
   private _themeManager: IThemeManager;
+  private _selections: IObservableMap<CodeEditor.ITextSelection[]>;
   private _session: ClientSession;
   private _model: BytecodeModel;
   private _view: BytecodeView;
@@ -221,6 +239,11 @@ export namespace PythonBytecodePanel {
      * Use preferences for the bytecode extension
      */
     userSettings: JSONObject;
+
+    /**
+     * Editor selections
+     */
+    selections: IObservableMap<CodeEditor.ITextSelection[]>;
 
     /**
      * Path of an existing session

@@ -14,12 +14,19 @@ import { BytecodeModel } from './model';
 const BYTECODE_PANEL_CLASS = 'jp-RenderedPythonBytecode';
 const BYTECODE_ERROR_CLASS = 'jp-RenderedPythonBytecodeError';
 
+const LINE_REGEX = /(^\s{2}(\d+)(?:(.|\r\n|\r|\n))+?(\r\n|\r|\n){2})/gim;
+
 export class BytecodeView extends VDomRenderer<any> {
   constructor(model: BytecodeModel) {
     super();
     this.id = 'PythonBytecode';
     this.model = model;
     this.addClass(BYTECODE_PANEL_CLASS);
+  }
+
+  protected formatBytecode(code: string): string[] {
+    const matches = code.match(LINE_REGEX);
+    return matches;
   }
 
   protected render(): React.ReactElement<any> {
@@ -30,12 +37,16 @@ export class BytecodeView extends VDomRenderer<any> {
     const code = this.model.output;
     const theme = this.model.isLight ? arduinoLight : tomorrowNight;
 
+    const elements = this.formatBytecode(code) || [];
+
     delete tomorrowNight.hljs['background'];
-    let out = (
-      <SyntaxHighlighter language="python" style={theme}>
-        {code}
-      </SyntaxHighlighter>
-    );
-    return out;
+    let out = elements.map(line => {
+      return (
+        <SyntaxHighlighter language="python" style={theme} wrapLines={true}>
+          {line}
+        </SyntaxHighlighter>
+      );
+    });
+    return <div>{out}</div>;
   }
 }
