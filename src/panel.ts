@@ -22,6 +22,8 @@ import { Message } from '@phosphor/messaging';
 
 import { Panel } from '@phosphor/widgets';
 
+import { flattenDeep, range } from 'lodash';
+
 import { BytecodeModel } from './model';
 
 import { BytecodeView } from './view';
@@ -183,7 +185,19 @@ export class PythonBytecodePanel extends Panel {
   }
 
   protected _handleSelectionChanged() {
-    console.log(this._selections);
+    const selectedLines = flattenDeep<number>(
+      this._selections.values().map(s =>
+        s.map(e => {
+          let start = Math.min(e.start.line, e.end.line);
+          let end = Math.max(e.start.line, e.end.line);
+          if (start != end && e.end.column === 0) {
+            end--;
+          }
+          return range(start, end + 1);
+        }),
+      ),
+    );
+    this.model.selectedLines = new Set(selectedLines);
   }
 
   dispose(): void {

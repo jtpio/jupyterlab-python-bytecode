@@ -27,3 +27,11 @@ div.jp-RenderedPythonBytecode {
   color: red;
   font-weight: bold;
 }
+
+.jp-LightHighlightPythonBytecode {
+  background: #c4e2fb;
+}
+
+.jp-DarkHighlightPythonBytecode {
+  background: #2196f3;
+}

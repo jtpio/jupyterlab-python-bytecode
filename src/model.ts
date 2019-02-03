@@ -19,7 +19,7 @@ export class BytecodeModel extends VDomModel {
     const msgType = msg.header.msg_type;
     switch (msgType) {
       case 'stream':
-        this._output = msg.content.text as string;
+        this._output = msg.content.text + '\n';
         this._error = '';
         this.notify();
         break;
@@ -53,7 +53,17 @@ export class BytecodeModel extends VDomModel {
     this._isLight = value;
   }
 
+  get selectedLines(): Set<number> {
+    return this._selectedLines;
+  }
+
+  set selectedLines(lines: Set<number>) {
+    this._selectedLines = lines;
+    this.notify();
+  }
+
   private _output: string = '';
   private _error: string = '';
   private _isLight: boolean = true;
+  private _selectedLines: Set<number>;
 }

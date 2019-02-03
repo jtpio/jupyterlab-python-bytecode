@@ -9,10 +9,15 @@ import {
   tomorrowNight,
 } from 'react-syntax-highlighter/styles/hljs';
 
+delete tomorrowNight.hljs['background'];
+delete arduinoLight.hljs['background'];
+
 import { BytecodeModel } from './model';
 
 const BYTECODE_PANEL_CLASS = 'jp-RenderedPythonBytecode';
 const BYTECODE_ERROR_CLASS = 'jp-RenderedPythonBytecodeError';
+const BYTECODE_LIGHT_HIGHLIGHT_CLASS = 'jp-LightHighlightPythonBytecode';
+const BYTECODE_DARK_HIGHLIGHT_CLASS = 'jp-DarkHighlightPythonBytecode';
 
 const LINE_REGEX = /(^\s{2}(\d+)(?:(.|\r\n|\r|\n))+?(\r\n|\r|\n){2})/gim;
 
@@ -24,8 +29,13 @@ export class BytecodeView extends VDomRenderer<any> {
     this.addClass(BYTECODE_PANEL_CLASS);
   }
 
-  protected formatBytecode(code: string): string[] {
-    const matches = code.match(LINE_REGEX);
+  protected formatBytecode(code: string): any[] {
+    let matches = [];
+    let match = LINE_REGEX.exec(code);
+    while (match != null) {
+      matches.push([parseInt(match[2], 10) - 1, '  ' + match[0].trim()]);
+      match = LINE_REGEX.exec(code);
+    }
     return matches;
   }
 
@@ -33,18 +43,24 @@ export class BytecodeView extends VDomRenderer<any> {
     if (this.model.error) {
       return <div className={BYTECODE_ERROR_CLASS}>{this.model.error}</div>;
     }
-
-    const code = this.model.output;
     const theme = this.model.isLight ? arduinoLight : tomorrowNight;
+    const elements = this.formatBytecode(this.model.output);
+    const selectedLines = this.model.selectedLines;
 
-    const elements = this.formatBytecode(code) || [];
-
-    delete tomorrowNight.hljs['background'];
-    let out = elements.map(line => {
+    let out = elements.map(block => {
+      const [line, code] = block;
+      let highlightClass = '';
+      if (selectedLines && selectedLines.has(line)) {
+        highlightClass = this.model.isLight
+          ? BYTECODE_LIGHT_HIGHLIGHT_CLASS
+          : BYTECODE_DARK_HIGHLIGHT_CLASS;
+      }
       return (
-        <SyntaxHighlighter language="python" style={theme} wrapLines={true}>
-          {line}
-        </SyntaxHighlighter>
+        <div className={highlightClass}>
+          <SyntaxHighlighter language="python" style={theme} wrapLines={true}>
+            {code}
+          </SyntaxHighlighter>
+        </div>
       );
     });
     return <div>{out}</div>;
