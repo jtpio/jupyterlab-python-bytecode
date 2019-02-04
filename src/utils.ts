@@ -28,5 +28,5 @@ export function parseBytecode(code: string): IBytecodeBlock[] {
     });
     match = LINE_REGEX.exec(code);
   }
-  return matches;
+  return matches.sort((a, b) => a.line - b.line);
 }
