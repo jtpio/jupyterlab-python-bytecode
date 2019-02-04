@@ -16,8 +16,7 @@ import { BytecodeModel } from './model';
 
 const BYTECODE_PANEL_CLASS = 'jp-RenderedPythonBytecode';
 const BYTECODE_ERROR_CLASS = 'jp-RenderedPythonBytecodeError';
-const BYTECODE_LIGHT_HIGHLIGHT_CLASS = 'jp-LightHighlightPythonBytecode';
-const BYTECODE_DARK_HIGHLIGHT_CLASS = 'jp-DarkHighlightPythonBytecode';
+const BYTECODE_HIGHLIGHT = 'jp-HighlightBytecode';
 
 const LINE_REGEX = /(^\s{2}(\d+)(?:(.|\r\n|\r|\n))+?(\r\n|\r|\n){2})/gim;
 
@@ -49,14 +48,12 @@ export class BytecodeView extends VDomRenderer<any> {
 
     let out = elements.map(block => {
       const [line, code] = block;
-      let highlightClass = '';
-      if (selectedLines && selectedLines.has(line)) {
-        highlightClass = this.model.isLight
-          ? BYTECODE_LIGHT_HIGHLIGHT_CLASS
-          : BYTECODE_DARK_HIGHLIGHT_CLASS;
-      }
       return (
-        <div className={highlightClass}>
+        <div
+          className={
+            selectedLines && selectedLines.has(line) ? BYTECODE_HIGHLIGHT : ''
+          }
+        >
           <SyntaxHighlighter language="python" style={theme} wrapLines={true}>
             {code}
           </SyntaxHighlighter>
