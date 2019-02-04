@@ -18,7 +18,7 @@ const BYTECODE_PANEL_CLASS = 'jp-RenderedPythonBytecode';
 const BYTECODE_ERROR_CLASS = 'jp-RenderedPythonBytecodeError';
 const BYTECODE_HIGHLIGHT = 'jp-HighlightBytecode';
 
-const LINE_REGEX = /(^(\s+)(\d+)(?:(.|\r\n|\r|\n))+?(\r\n|\r|\n){2})/gim;
+const LINE_REGEX = /(^(\s*)(\d+)(?:(.|\r\n|\r|\n))+?(\r\n|\r|\n){2})/gim;
 
 export class BytecodeView extends VDomRenderer<any> {
   constructor(model: BytecodeModel) {
