@@ -30,9 +30,9 @@
     "clean": "rimraf lib",
     "watch": "tsc -w",
     "prepare": "npm run clean && npm run build",
-    "test": "npm run test:firefox",
-    "test:chrome": "karma start --browsers=Chrome tests/karma.conf.js",
-    "test:debug": "karma start --browsers=Chrome --singleRun=false --debug=true tests/karma.conf.js",
+    "test": "npm run test:chrome",
+    "test:chrome": "python tests/run-test.py --browsers=ChromeHeadless karma.conf.js",
+    "test:debug": "python tests/run-test.py --browsers=ChromeHeadless --singleRun=false --debug=true karma.conf.js",
     "test:firefox": "python tests/run-test.py --browsers=Firefox karma.conf.js"
   },
   "dependencies": {
