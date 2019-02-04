@@ -188,12 +188,12 @@ export class PythonBytecodePanel extends Panel {
     const selectedLines = flattenDeep<number>(
       this._selections.values().map(s =>
         s.map(e => {
-          let start = Math.min(e.start.line, e.end.line);
-          let end = Math.max(e.start.line, e.end.line);
-          if (start != end && e.end.column === 0) {
-            end--;
+          let [start, end] = [e.start, e.end].sort((a, b) => a.line - b.line);
+          let [startLine, endLine] = [start.line, end.line];
+          if (startLine != endLine && end.column === 0) {
+            endLine--;
           }
-          return range(start, end + 1);
+          return range(startLine, endLine + 1);
         }),
       ),
     );
