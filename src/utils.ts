@@ -19,6 +19,7 @@ export function escapeComments(code: string): string {
  */
 export function parseBytecode(code: string): IBytecodeBlock[] {
   let matches = [];
+  code += '\n\n'; // for the regex
   let match = LINE_REGEX.exec(code);
   while (match != null) {
     const line = parseInt(match[3], 10);

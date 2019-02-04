@@ -4,8 +4,7 @@ export const KERNEL_CONTENT = `
 1           0 LOAD_NAME                0 (print)
             2 LOAD_CONST               0 (42)
             4 CALL_FUNCTION            1
-            6 RETURN_VALUE
-`;
+            6 RETURN_VALUE`;
 
 export const KERNEL_ERROR = 'unexpected EOF while parsing (<dis>, line 1)';
 

@@ -43,7 +43,7 @@ export class BytecodeView extends VDomRenderer<any> {
             selectedLines && selectedLines.has(line) ? BYTECODE_HIGHLIGHT : ''
           }
         >
-          <SyntaxHighlighter language="python" style={theme} wrapLines={true}>
+          <SyntaxHighlighter language="python" style={theme}>
             {code}
           </SyntaxHighlighter>
         </div>

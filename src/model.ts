@@ -19,7 +19,7 @@ export class BytecodeModel extends VDomModel {
     const msgType = msg.header.msg_type;
     switch (msgType) {
       case 'stream':
-        this._output = msg.content.text + '\n';
+        this._output = msg.content.text as string;
         this._error = '';
         this.notify();
         break;
