@@ -1,8 +1,4 @@
-import {
-  JupyterLab,
-  JupyterLabPlugin,
-  ILayoutRestorer,
-} from '@jupyterlab/application';
+import { JupyterLab, JupyterLabPlugin } from '@jupyterlab/application';
 
 import {
   ICommandPalette,
@@ -29,11 +25,6 @@ namespace CommandIDs {
    * Create a new panel to show Python Bytecode
    */
   export const create = `pythonbytecode:create`;
-
-  /**
-   * Restore a Python Bytecode panel
-   */
-  export const open = `pythonbytecode:open`;
 }
 
 /**
@@ -53,7 +44,6 @@ let activateByteCodePlugin = async (
   docManager: IDocumentManager,
   editorTracker: IEditorTracker,
   palette: ICommandPalette,
-  restorer: ILayoutRestorer,
   settingsRegistry: ISettingRegistry,
   themeManager: IThemeManager,
 ) => {
@@ -61,16 +51,6 @@ let activateByteCodePlugin = async (
 
   const tracker = new InstanceTracker<PythonBytecodePanel>({
     namespace: PythonBytecodePanel.NAMESPACE,
-  });
-
-  restorer.restore(tracker, {
-    command: CommandIDs.open,
-    args: panel => ({
-      path: panel.session.path,
-      name: panel.session.name,
-      ref: panel.id,
-    }),
-    name: panel => panel.session.path,
   });
 
   /**
@@ -140,29 +120,6 @@ let activateByteCodePlugin = async (
     label: 'Show Python Bytecode',
   });
 
-  commands.addCommand(CommandIDs.open, {
-    execute: args => {
-      const { basePath, path, name, id } = args;
-      if (!path || !name) {
-        return;
-      }
-
-      let widget = editorTracker.currentWidget;
-      if (!widget) {
-        return;
-      }
-
-      return createPythonBytecodePanel({
-        basePath:
-          (basePath as string) || browserFactory.defaultBrowser.model.path,
-        path: path as string,
-        selections: widget.content.model.selections,
-        name: name as string,
-        ref: id as string,
-      });
-    },
-  });
-
   app.contextMenu.addItem({
     command: CommandIDs.create,
     selector: '.jp-FileEditor',
@@ -186,7 +143,6 @@ const extension: JupyterLabPlugin<void> = {
     IDocumentManager,
     IEditorTracker,
     ICommandPalette,
-    ILayoutRestorer,
     ISettingRegistry,
     IThemeManager,
   ],
