@@ -13,7 +13,7 @@ JupyterLab extension to inspect Python Bytecode.
 
 Try the extension in your browser with Binder:
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jtpio/jupyterlab-python-bytecode/master?urlpath=lab/tree/doc/example.py)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jtpio/jupyterlab-python-bytecode/stable?urlpath=lab/tree/doc/example.py)
 
 ## Prerequisites
 
