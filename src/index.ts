@@ -89,6 +89,7 @@ let activateByteCodePlugin = async (
       docManager,
       themeManager,
       userSettings,
+      selections: options.selections,
       ...(options as Partial<PythonBytecodePanel.IOptions>),
     });
 
@@ -120,6 +121,7 @@ let activateByteCodePlugin = async (
       return createPythonBytecodePanel({
         basePath: basePath,
         path: widget.context.path,
+        selections: widget.content.model.selections,
         ref: widget.id,
       });
     },
@@ -145,10 +147,16 @@ let activateByteCodePlugin = async (
         return;
       }
 
+      let widget = editorTracker.currentWidget;
+      if (!widget) {
+        return;
+      }
+
       return createPythonBytecodePanel({
         basePath:
           (basePath as string) || browserFactory.defaultBrowser.model.path,
         path: path as string,
+        selections: widget.content.model.selections,
         name: name as string,
         ref: id as string,
       });

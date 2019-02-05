@@ -53,7 +53,17 @@ export class BytecodeModel extends VDomModel {
     this._isLight = value;
   }
 
+  get selectedLines(): Set<number> {
+    return this._selectedLines;
+  }
+
+  set selectedLines(lines: Set<number>) {
+    this._selectedLines = lines;
+    this.notify();
+  }
+
   private _output: string = '';
   private _error: string = '';
   private _isLight: boolean = true;
+  private _selectedLines: Set<number>;
 }

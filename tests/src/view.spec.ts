@@ -38,7 +38,7 @@ describe('BytecodeView', () => {
     await framePromise();
 
     let div = view.node.firstChild as HTMLElement;
-    expect(div.nodeName.toLowerCase()).to.eq('pre');
+    expect(div.nodeName.toLowerCase()).to.eq('div');
     expect(div.children).to.not.be.empty;
     expect(div.textContent).to.equal(KERNEL_CONTENT);
     expect(div.className).to.not.contain('Error');

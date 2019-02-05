@@ -9,10 +9,15 @@ import {
   tomorrowNight,
 } from 'react-syntax-highlighter/styles/hljs';
 
+delete tomorrowNight.hljs['background'];
+delete arduinoLight.hljs['background'];
+
 import { BytecodeModel } from './model';
+import { parseBytecode } from './utils';
 
 const BYTECODE_PANEL_CLASS = 'jp-RenderedPythonBytecode';
 const BYTECODE_ERROR_CLASS = 'jp-RenderedPythonBytecodeError';
+const BYTECODE_HIGHLIGHT = 'jp-HighlightBytecode';
 
 export class BytecodeView extends VDomRenderer<any> {
   constructor(model: BytecodeModel) {
@@ -26,16 +31,24 @@ export class BytecodeView extends VDomRenderer<any> {
     if (this.model.error) {
       return <div className={BYTECODE_ERROR_CLASS}>{this.model.error}</div>;
     }
-
-    const code = this.model.output;
     const theme = this.model.isLight ? arduinoLight : tomorrowNight;
+    const elements = parseBytecode(this.model.output);
+    const selectedLines = this.model.selectedLines;
 
-    delete tomorrowNight.hljs['background'];
-    let out = (
-      <SyntaxHighlighter language="python" style={theme}>
-        {code}
-      </SyntaxHighlighter>
-    );
-    return out;
+    let out = elements.map(block => {
+      const { line, code } = block;
+      return (
+        <div
+          className={
+            selectedLines && selectedLines.has(line) ? BYTECODE_HIGHLIGHT : ''
+          }
+        >
+          <SyntaxHighlighter language="python" style={theme}>
+            {code}
+          </SyntaxHighlighter>
+        </div>
+      );
+    });
+    return <div>{out}</div>;
   }
 }

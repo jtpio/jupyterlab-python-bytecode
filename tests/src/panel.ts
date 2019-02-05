@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 
 import { ServiceManager } from '@jupyterlab/services';
+import { ObservableMap } from '@jupyterlab/observables';
 import { DocumentManager } from '@jupyterlab/docmanager';
 import {
   DocumentRegistry,
@@ -12,7 +13,7 @@ import {
 import { Widget } from '@phosphor/widgets';
 
 import { PythonBytecodePanel } from '../../src/panel';
-import { ThemeManager, IThemeManager } from '@jupyterlab/apputils';
+import { CodeEditor } from '@jupyterlab/codeeditor';
 
 class WidgetFactory extends ABCWidgetFactory<IDocumentWidget> {
   protected createNewWidget(
@@ -73,6 +74,7 @@ describe('BytecodePanel', () => {
       serviceManager,
       docManager,
       themeManager: null,
+      selections: new ObservableMap<CodeEditor.ITextSelection[]>(),
       userSettings: {
         kernelLanguagePreference: 'python3',
         kernelAutoStart: true,

@@ -30,9 +30,9 @@
     "clean": "rimraf lib",
     "watch": "tsc -w",
     "prepare": "npm run clean && npm run build",
-    "test": "npm run test:firefox",
-    "test:chrome": "karma start --browsers=Chrome tests/karma.conf.js",
-    "test:debug": "karma start --browsers=Chrome --singleRun=false --debug=true tests/karma.conf.js",
+    "test": "npm run test:chrome",
+    "test:chrome": "python tests/run-test.py --browsers=ChromeHeadless karma.conf.js",
+    "test:debug": "python tests/run-test.py --browsers=ChromeHeadless --singleRun=false --debug=true karma.conf.js",
     "test:firefox": "python tests/run-test.py --browsers=Firefox karma.conf.js"
   },
   "dependencies": {
@@ -43,6 +43,7 @@
     "@jupyterlab/filebrowser": "^0.19.0",
     "@jupyterlab/fileeditor": "^0.19.0",
     "@jupyterlab/services": "^3.1.0",
+    "lodash": "^4.17.11",
     "react": "~16.4.2",
     "react-dom": "~16.4.2",
     "react-syntax-highlighter": "^8.0.1"
@@ -50,6 +51,7 @@
   "devDependencies": {
     "@jupyterlab/testutils": "^0.2.4",
     "@types/chai": "~4.0.10",
+    "@types/lodash": "~4.14.120",
     "@types/mocha": "^5.2.0",
     "@types/react": "~16.4.2",
     "@types/react-dom": "~16.0.7",
