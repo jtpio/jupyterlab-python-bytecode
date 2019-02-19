@@ -85,6 +85,10 @@ export class PythonBytecodePanel extends Panel {
   public async setup(): Promise<any> {
     await this._session.initialize();
     await this._session.ready;
+
+    this.title.label = `${this._session.kernelDisplayName} Bytecode`;
+    this.title.caption = this._session.name;
+
     await this._setupListeners();
 
     // do not block on first request

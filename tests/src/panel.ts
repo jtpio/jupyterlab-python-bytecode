@@ -94,6 +94,12 @@ describe('BytecodePanel', () => {
     });
   });
 
+  describe('ui', () => {
+    it('should show the kernel display name', async () => {
+      expect(panel.title.label).to.equal('Echo Kernel Bytecode');
+    });
+  });
+
   describe('dispose', () => {
     it('should terminate the session', async () => {
       panel.dispose();
