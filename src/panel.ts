@@ -16,7 +16,7 @@ import { DocumentRegistry } from '@jupyterlab/docregistry';
 
 import { ServiceManager } from '@jupyterlab/services';
 
-import { JSONObject } from '@phosphor/coreutils';
+import { JSONObject, UUID } from '@phosphor/coreutils';
 
 import { Message } from '@phosphor/messaging';
 
@@ -56,13 +56,17 @@ export class PythonBytecodePanel extends Panel {
     this._themeManager = themeManager;
     this._selections = selections;
 
-    const { kernelLanguagePreference, kernelAutoStart } = userSettings;
+    const {
+      kernelLanguagePreference,
+      kernelAutoStart,
+      startNewKernel,
+    } = userSettings;
 
     name = name || widget.context.contentsModel.name;
 
     this._session = new ClientSession({
       manager: serviceManager.sessions,
-      path,
+      path: startNewKernel ? UUID.uuid4() : path,
       name: name || `Python Bytecode`,
       type: 'console',
       kernelPreference: {
@@ -88,6 +92,10 @@ export class PythonBytecodePanel extends Panel {
 
     this.title.label = `${this._session.kernelDisplayName} Bytecode`;
     this.title.caption = this._session.name;
+
+    this._session.setName(
+      `${this._session.name} - ${this._session.kernelDisplayName}`,
+    );
 
     await this._setupListeners();
 
