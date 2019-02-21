@@ -10,6 +10,12 @@
       "default": "Python 3",
       "type": "string"
     },
+    "startNewKernel": {
+      "title": "Start a new Kernel",
+      "description": "Whether to always start a new kernel or not",
+      "default": false,
+      "type": "boolean"
+    },
     "kernelAutoStart": {
       "title": "Autostart Kernel",
       "description": "Whether the kernel should start automatically",
