@@ -93,7 +93,7 @@ export class PythonBytecodePanel extends Panel {
     this.title.label = `${this._session.kernelDisplayName} Bytecode`;
     this.title.caption = this._session.name;
 
-    this._session.setName(
+    await this._session.setName(
       `${this._session.name} - ${this._session.kernelDisplayName}`,
     );
 
