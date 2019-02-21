@@ -1,6 +1,6 @@
 {
   "name": "jupyterlab-python-bytecode",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "JupyterLab extension to inspect Python Bytecode",
   "keywords": [
     "jupyter",
