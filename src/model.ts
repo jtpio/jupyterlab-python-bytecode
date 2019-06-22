@@ -3,6 +3,7 @@ import { VDomModel } from '@jupyterlab/apputils';
 import { KernelMessage } from '@jupyterlab/services';
 
 import { escapeComments } from './utils';
+import { nbformat } from '@jupyterlab/coreutils';
 
 export class BytecodeModel extends VDomModel {
   constructor() {
@@ -17,15 +18,16 @@ export class BytecodeModel extends VDomModel {
 
   public handleKernelMessage = (msg: KernelMessage.IIOPubMessage) => {
     const msgType = msg.header.msg_type;
+    const message = msg.content as nbformat.IOutput;
     switch (msgType) {
       case 'stream':
-        this._output = msg.content.text as string;
+        this._output = message.text as string;
         this._error = '';
         this.notify();
         break;
       case 'error':
         console.error(msg.content);
-        this._error = msg.content.evalue as string;
+        this._error = message.evalue as string;
         this.notify();
         break;
       default:

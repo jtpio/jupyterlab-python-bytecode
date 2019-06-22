@@ -7,7 +7,7 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import {
   arduinoLight,
   tomorrowNight,
-} from 'react-syntax-highlighter/styles/hljs';
+} from 'react-syntax-highlighter/dist/styles/hljs';
 
 delete tomorrowNight.hljs['background'];
 delete arduinoLight.hljs['background'];
