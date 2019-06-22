@@ -2,6 +2,8 @@ import { expect } from 'chai';
 
 import { framePromise } from '@jupyterlab/testutils';
 
+import { KernelMessage } from '@jupyterlab/services';
+
 import { BytecodeModel } from '../../src/model';
 import { BytecodeView } from '../../src/view';
 
@@ -34,7 +36,7 @@ describe('BytecodeView', () => {
   it('should render the bytecode output', async () => {
     const msg = createKernelContentMessage(KERNEL_CONTENT);
 
-    model.handleKernelMessage(msg);
+    model.handleKernelMessage(msg as KernelMessage.IIOPubMessage);
     await framePromise();
 
     let div = view.node.firstChild as HTMLElement;
@@ -47,7 +49,7 @@ describe('BytecodeView', () => {
   it('should render errors', async () => {
     const msg = createKernelErrorMessage(KERNEL_ERROR);
 
-    model.handleKernelMessage(msg);
+    model.handleKernelMessage(msg as KernelMessage.IIOPubMessage);
     await framePromise();
 
     let div = view.node.firstChild as HTMLElement;
