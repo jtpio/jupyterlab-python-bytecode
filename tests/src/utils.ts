@@ -10,7 +10,7 @@ export const KERNEL_ERROR = 'unexpected EOF while parsing (<dis>, line 1)';
 
 export function createKernelContentMessage(
   content: string,
-): KernelMessage.IIOPubMessage {
+): KernelMessage.IMessage {
   return {
     channel: 'iopub',
     parent_header: {},
@@ -26,7 +26,7 @@ export function createKernelContentMessage(
 
 export function createKernelErrorMessage(
   error: string,
-): KernelMessage.IIOPubMessage {
+): KernelMessage.IMessage {
   return {
     channel: 'iopub',
     parent_header: {},

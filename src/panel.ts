@@ -16,7 +16,7 @@ import { DocumentRegistry } from '@jupyterlab/docregistry';
 
 import { ServiceManager } from '@jupyterlab/services';
 
-import { JSONObject, UUID } from '@phosphor/coreutils';
+import { UUID, ReadonlyJSONObject } from '@phosphor/coreutils';
 
 import { Message } from '@phosphor/messaging';
 
@@ -110,33 +110,15 @@ export class PythonBytecodePanel extends Panel {
   }
 
   protected _setupListeners() {
-    this._monitor.activityStopped.connect(
-      this._getModelContent,
-      this,
-    );
-    this._fileContext.fileChanged.connect(
-      this._getFileContent,
-      this,
-    );
-    this._fileContext.disposed.connect(
-      this.dispose,
-      this,
-    );
-    this._selections.changed.connect(
-      this._handleSelectionChanged,
-      this,
-    );
-    this._session.kernelChanged.connect(
-      this._handleKernelChanged,
-      this,
-    );
+    this._monitor.activityStopped.connect(this._getModelContent, this);
+    this._fileContext.fileChanged.connect(this._getFileContent, this);
+    this._fileContext.disposed.connect(this.dispose, this);
+    this._selections.changed.connect(this._handleSelectionChanged, this);
+    this._session.kernelChanged.connect(this._handleKernelChanged, this);
 
     // TODO: make themeManager optional
     if (this._themeManager) {
-      this._themeManager.themeChanged.connect(
-        this._changeTheme,
-        this,
-      );
+      this._themeManager.themeChanged.connect(this._changeTheme, this);
     }
   }
 
@@ -264,7 +246,7 @@ export namespace PythonBytecodePanel {
     /**
      * Use preferences for the bytecode extension
      */
-    userSettings: JSONObject;
+    userSettings: ReadonlyJSONObject;
 
     /**
      * Editor selections

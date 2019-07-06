@@ -7,7 +7,7 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import {
   arduinoLight,
   tomorrowNight,
-} from 'react-syntax-highlighter/styles/hljs';
+} from 'react-syntax-highlighter/dist/styles/hljs';
 
 delete tomorrowNight.hljs['background'];
 delete arduinoLight.hljs['background'];
@@ -35,10 +35,11 @@ export class BytecodeView extends VDomRenderer<any> {
     const elements = parseBytecode(this.model.output);
     const selectedLines = this.model.selectedLines;
 
-    let out = elements.map(block => {
+    let out = elements.map((block, i) => {
       const { line, code } = block;
       return (
         <div
+          key={`bytecode-block-${i}`}
           className={
             selectedLines && selectedLines.has(line) ? BYTECODE_HIGHLIGHT : ''
           }

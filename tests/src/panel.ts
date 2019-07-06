@@ -12,7 +12,7 @@ import {
 } from '@jupyterlab/docregistry';
 import { Widget } from '@phosphor/widgets';
 
-import { PythonBytecodePanel } from '../../src/panel';
+import { PythonBytecodePanel } from '../../lib/panel';
 import { CodeEditor } from '@jupyterlab/codeeditor';
 
 class WidgetFactory extends ABCWidgetFactory<IDocumentWidget> {
@@ -84,7 +84,7 @@ describe('BytecodePanel', () => {
     await panel.setup();
   });
 
-  after(() => {
+  afterEach(() => {
     panel.dispose();
   });
 

@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { BytecodeModel } from '../../src/model';
+import { BytecodeModel } from '../../lib/model';
 import { KernelMessage } from '@jupyterlab/services';
 
 import {
@@ -30,7 +30,7 @@ describe('BytecodeModel', () => {
   it('should handle stream messages from the kernel', () => {
     const msg = createKernelContentMessage(KERNEL_CONTENT);
 
-    model.handleKernelMessage(msg);
+    model.handleKernelMessage(msg as KernelMessage.IIOPubMessage);
 
     expect(model.output).to.eq(KERNEL_CONTENT);
     expect(model.error).to.be.empty;
@@ -39,7 +39,7 @@ describe('BytecodeModel', () => {
   it('should handle error messages from the kernel', () => {
     const msg = createKernelErrorMessage(KERNEL_ERROR);
 
-    model.handleKernelMessage(msg);
+    model.handleKernelMessage(msg as KernelMessage.IIOPubMessage);
 
     expect(model.output).to.be.empty;
     expect(model.error).to.eq(KERNEL_ERROR);

@@ -1,10 +1,9 @@
-import { JupyterLab, JupyterLabPlugin } from '@jupyterlab/application';
-
 import {
-  ICommandPalette,
-  IThemeManager,
-  InstanceTracker,
-} from '@jupyterlab/apputils';
+  JupyterFrontEnd,
+  JupyterFrontEndPlugin,
+} from '@jupyterlab/application';
+
+import { ICommandPalette, IThemeManager } from '@jupyterlab/apputils';
 
 import { ISettingRegistry, PathExt } from '@jupyterlab/coreutils';
 
@@ -39,7 +38,7 @@ interface ICreateOptions extends Partial<PythonBytecodePanel.IOptions> {
  * Activate the plugin
  */
 let activateByteCodePlugin = async (
-  app: JupyterLab,
+  app: JupyterFrontEnd,
   browserFactory: IFileBrowserFactory,
   docManager: IDocumentManager,
   editorTracker: IEditorTracker,
@@ -48,10 +47,6 @@ let activateByteCodePlugin = async (
   themeManager: IThemeManager,
 ) => {
   const { commands, serviceManager, shell } = app;
-
-  const tracker = new InstanceTracker<PythonBytecodePanel>({
-    namespace: PythonBytecodePanel.NAMESPACE,
-  });
 
   /**
    * Create a Python bytecode panel for a given path to a Python file
@@ -75,11 +70,9 @@ let activateByteCodePlugin = async (
 
     await panel.setup();
 
-    tracker.add(panel);
-
     const { panelInsertMode } = userSettings;
     const insertMode = `split-${panelInsertMode}` as DockLayout.InsertMode;
-    shell.addToMainArea(panel, {
+    shell.add(panel, 'main', {
       mode: insertMode,
       ref: options.ref,
     });
@@ -134,7 +127,7 @@ let activateByteCodePlugin = async (
 /**
  * Initialization data for the jupyterlab-python-bytecode extension.
  */
-const extension: JupyterLabPlugin<void> = {
+const extension: JupyterFrontEndPlugin<void> = {
   id: 'jupyterlab-python-bytecode:plugin',
   autoStart: true,
   activate: activateByteCodePlugin,
