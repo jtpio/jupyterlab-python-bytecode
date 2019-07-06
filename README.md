@@ -17,7 +17,7 @@ Try the extension in your browser with Binder:
 
 ## Prerequisites
 
-- JupyterLab 0.35
+- JupyterLab 1.0
 - `ipykernel`
 
 To install JupyterLab:
