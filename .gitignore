@@ -174,3 +174,6 @@ jupyterlab-python-bytecode/labextension
 
 # Local test files and notebooks
 tmp/
+
+tsconfig.tsbuildinfo
+junit.xml

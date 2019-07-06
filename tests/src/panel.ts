@@ -84,7 +84,7 @@ describe('BytecodePanel', () => {
     await panel.setup();
   });
 
-  after(() => {
+  afterEach(() => {
     panel.dispose();
   });
 

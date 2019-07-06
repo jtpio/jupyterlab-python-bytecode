@@ -8,13 +8,15 @@
     "moduleResolution": "node",
     "noEmitOnError": true,
     "noImplicitAny": true,
-    "outDir": "../build",
+    "noUnusedLocals": true,
+    "outDir": "build",
+    "preserveWatchOutput": true,
+    "resolveJsonModule": true,
+    "rootDir": "..",
     "skipLibCheck": true,
-    "sourceMap": true,
     "strict": true,
     "strictNullChecks": false,
     "target": "es2015",
-    "typeRoots": ["../../src/@types", "../../node_modules/@types"]
-  },
-  "include": ["../../**/*.ts*", "../webpack.config.js"]
+    "types": ["jest"]
+  }
 }
