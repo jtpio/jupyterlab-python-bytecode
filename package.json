@@ -27,7 +27,7 @@
   "scripts": {
     "build": "tsc",
     "prettier": "prettier --write '**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}'",
-    "clean": "rimraf lib && rimraf tests/build",
+    "clean": "rimraf lib && rimraf tests/build && rimraf tsconfig.tsbuildinfo",
     "watch": "tsc -w",
     "prepare": "npm run clean && npm run build",
     "test": "python tests/run-test.py"

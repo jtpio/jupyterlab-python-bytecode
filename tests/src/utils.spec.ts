@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { escapeComments, parseBytecode } from '../../src/utils';
+import { escapeComments, parseBytecode } from '../../lib/utils';
 
 const LONG_KERNEL_CONTENT = `
   1           0 SETUP_LOOP              16 (to 18)

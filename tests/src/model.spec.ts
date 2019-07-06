@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { BytecodeModel } from '../../src/model';
+import { BytecodeModel } from '../../lib/model';
 import { KernelMessage } from '@jupyterlab/services';
 
 import {

@@ -4,8 +4,8 @@ import { framePromise } from '@jupyterlab/testutils';
 
 import { KernelMessage } from '@jupyterlab/services';
 
-import { BytecodeModel } from '../../src/model';
-import { BytecodeView } from '../../src/view';
+import { BytecodeModel } from '../../lib/model';
+import { BytecodeView } from '../../lib/view';
 
 import {
   createKernelContentMessage,
