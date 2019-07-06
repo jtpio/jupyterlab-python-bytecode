@@ -2,5 +2,5 @@ name: jupyterlab-python-bytecode
 channels:
 - conda-forge
 dependencies:
-- jupyterlab=0.35
+- jupyterlab=1.0
 - python=3.7
