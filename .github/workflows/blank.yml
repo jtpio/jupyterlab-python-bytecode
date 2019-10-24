@@ -8,19 +8,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
-    - name: Install dependencies
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Install node
       uses: actions/setup-node@v1
       with:
        node-version: '10.x'
-    - uses: actions/setup-python@v1
-      name: Install Python
+    - name: Install Python
+      uses: actions/setup-python@v1
       with:
-        python-version: '3.x'
+        python-version: '3.7'
         architecture: 'x64'
     - name: Install JupyterLab
       run: python -m pip install jupyterlab
-    - name: Build and run tests
+    - name: Run tests
       run: |
         npm install
         npm run build
