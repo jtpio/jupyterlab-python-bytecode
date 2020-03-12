@@ -19,10 +19,6 @@ describe('BytecodeModel', () => {
     expect(model.error).to.be.empty;
   });
 
-  afterEach(() => {
-    model.dispose();
-  });
-
   it('should be creatable', () => {
     expect(model).to.be.an.instanceof(BytecodeModel);
   });

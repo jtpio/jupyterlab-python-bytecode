@@ -25,7 +25,6 @@ describe('BytecodeView', () => {
 
   afterEach(() => {
     view.dispose();
-    model.dispose();
   });
 
   it('should be creatable', () => {
