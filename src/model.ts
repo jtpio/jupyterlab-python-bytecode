@@ -1,71 +1,91 @@
-import { VDomModel } from '@jupyterlab/apputils';
+import { IOutput } from '@jupyterlab/nbformat';
 
 import { KernelMessage } from '@jupyterlab/services';
 
-import { escapeComments } from './utils';
-import { nbformat } from '@jupyterlab/coreutils';
+import { ISignal, Signal } from '@lumino/signaling';
 
-export class BytecodeModel extends VDomModel {
-  constructor() {
-    super();
+/**
+ * The Bytecode model
+ */
+export class BytecodeModel {
+  /**
+   * Get the bytecode output.
+   */
+  get output(): string {
+    return this._output;
   }
 
-  public formatKernelMessage(fileContent: string): string {
-    const escapedContent = escapeComments(fileContent);
-    const code = ['import dis', `dis.dis("""${escapedContent}""")`].join('\n');
-    return code;
+  /**
+   * Get the error message.
+   */
+  get error(): string {
+    return this._error;
   }
 
-  public handleKernelMessage = (msg: KernelMessage.IIOPubMessage) => {
+  /**
+   * Whether this is a light theme.
+   */
+  get isLight(): boolean {
+    return this._isLight;
+  }
+
+  /**
+   * Set the theme to light or dark.
+   * @value true if light, false otherwise
+   */
+  set isLight(value: boolean) {
+    this._isLight = value;
+    this._changed.emit(void 0);
+  }
+
+  /**
+   * Get the selected lines from the editor.
+   */
+  get selectedLines(): Set<number> {
+    return this._selectedLines;
+  }
+
+  /**
+   * Set the selected lines from the editor.
+   * @lines The selected lines.
+   */
+  set selectedLines(lines: Set<number>) {
+    this._selectedLines = lines;
+    this._changed.emit(void 0);
+  }
+
+  /**
+   * A signal emitted when the model changes.
+   */
+  get changed(): ISignal<BytecodeModel, void> {
+    return this._changed;
+  }
+
+  /**
+   * Handle a message from the kernel.
+   */
+  handleKernelMessage = (msg: KernelMessage.IIOPubMessage) => {
     const msgType = msg.header.msg_type;
-    const message = msg.content as nbformat.IOutput;
+    const message = msg.content as IOutput;
     switch (msgType) {
       case 'stream':
         this._output = message.text as string;
         this._error = '';
-        this.notify();
+        this._changed.emit(void 0);
         break;
       case 'error':
         console.error(msg.content);
         this._error = message.evalue as string;
-        this.notify();
+        this._changed.emit(void 0);
         break;
       default:
         break;
     }
   };
 
-  public notify(): void {
-    this.stateChanged.emit(void 0);
-  }
-
-  get output(): string {
-    return this._output;
-  }
-
-  get error(): string {
-    return this._error;
-  }
-
-  get isLight(): boolean {
-    return this._isLight;
-  }
-
-  set isLight(value: boolean) {
-    this._isLight = value;
-  }
-
-  get selectedLines(): Set<number> {
-    return this._selectedLines;
-  }
-
-  set selectedLines(lines: Set<number>) {
-    this._selectedLines = lines;
-    this.notify();
-  }
-
   private _output: string = '';
   private _error: string = '';
   private _isLight: boolean = true;
   private _selectedLines: Set<number>;
+  private _changed = new Signal<this, void>(this);
 }

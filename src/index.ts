@@ -5,7 +5,7 @@ import {
 
 import { ICommandPalette, IThemeManager } from '@jupyterlab/apputils';
 
-import { ISettingRegistry, PathExt } from '@jupyterlab/coreutils';
+import { PathExt } from '@jupyterlab/coreutils';
 
 import { IDocumentManager } from '@jupyterlab/docmanager';
 
@@ -13,7 +13,9 @@ import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 
 import { IEditorTracker } from '@jupyterlab/fileeditor';
 
-import { DockLayout } from '@phosphor/widgets';
+import { ISettingRegistry } from '@jupyterlab/settingregistry';
+
+import { DockLayout } from '@lumino/widgets';
 
 import { PythonBytecodePanel } from './panel';
 
@@ -37,7 +39,7 @@ interface ICreateOptions extends Partial<PythonBytecodePanel.IOptions> {
 /**
  * Activate the plugin
  */
-let activateByteCodePlugin = async (
+const activateByteCodePlugin = async (
   app: JupyterFrontEnd,
   browserFactory: IFileBrowserFactory,
   docManager: IDocumentManager,
@@ -59,7 +61,7 @@ let activateByteCodePlugin = async (
 
     await serviceManager.ready;
 
-    let panel = new PythonBytecodePanel({
+    const panel = new PythonBytecodePanel({
       serviceManager,
       docManager,
       themeManager,
@@ -71,9 +73,9 @@ let activateByteCodePlugin = async (
     await panel.setup();
 
     const { panelInsertMode } = userSettings;
-    const insertMode = `split-${panelInsertMode}` as DockLayout.InsertMode;
+    const mode = `split-${panelInsertMode}` as DockLayout.InsertMode;
     shell.add(panel, 'main', {
-      mode: insertMode,
+      mode,
       ref: options.ref,
     });
     return panel;
@@ -81,12 +83,12 @@ let activateByteCodePlugin = async (
 
   commands.addCommand(CommandIDs.create, {
     execute: args => {
-      let widget = editorTracker.currentWidget;
+      const widget = editorTracker.currentWidget;
       if (!widget) {
         return;
       }
 
-      let basePath =
+      const basePath =
         (args['basePath'] as string) ||
         (args['cwd'] as string) ||
         browserFactory.defaultBrowser.model.path;
@@ -105,7 +107,7 @@ let activateByteCodePlugin = async (
       );
     },
     isVisible: () => {
-      let widget = editorTracker.currentWidget;
+      const widget = editorTracker.currentWidget;
       return (
         (widget && PathExt.extname(widget.context.path) === '.py') || false
       );

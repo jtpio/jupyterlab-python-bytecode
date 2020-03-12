@@ -12,7 +12,8 @@ let local = {
   testRegex: `.*\.spec\.tsx?$`,
   transform: {
     "\\.(ts|tsx)?$": "ts-jest",
-    "\\.(js|jsx)?$": "./transform.js"
+    "\\.(js|jsx)?$": "./transform.js",
+    '\\.svg$': 'jest-raw-loader'
   },
   transformIgnorePatterns: ["/node_modules/(?!(@jupyterlab/.*)/)"],
   globals: {
