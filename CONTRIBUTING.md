@@ -14,10 +14,10 @@ conda create -c conda-forge -n jupyterlab-python-bytecode yarn nodejs jupyterlab
 conda activate jupyterlab-python-code
 
 # Install the dependencies
-npm install
+jlpm
 
 # Build the extension
-npm run build
+jlpm run build
 
 # Link the JupyterLab extension
 jupyter labextension link .
@@ -30,7 +30,7 @@ To double check the extension has been linked correctly, run:
 The command should return something similar to the following:
 
 ```
-JupyterLab v0.34.10
+JupyterLab v2.0.1
 Known labextensions:
    app dir: /path/to/miniconda/envs/jupyterlab-python-bytecode/share/jupyter/lab
         jupyterlab-python-bytecode v0.1.0  enabled  OK*
@@ -49,7 +49,7 @@ To rebuild the package and the JupyterLab app:
 
 ```bash
 # Build the extension
-npm run build
+jlpm run build
 
 # Rebuild JupyterLab
 jupyter lab build
@@ -62,11 +62,11 @@ It is also possible to use the `watch` script to automatically rebuild the exten
 jupyter lab --watch
 
 # Start the watch script
-npm run watch
+jlpm run watch
 ```
 
 ## Tests
 
 To run the tests:
 
-`npm run test`
+`jlpm run test`

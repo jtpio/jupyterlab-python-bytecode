@@ -1,8 +1,13 @@
 import { expect } from 'chai';
 
 import { ServiceManager } from '@jupyterlab/services';
+
 import { ObservableMap } from '@jupyterlab/observables';
+
 import { DocumentManager } from '@jupyterlab/docmanager';
+
+import { CodeEditor } from '@jupyterlab/codeeditor';
+
 import {
   DocumentRegistry,
   TextModelFactory,
@@ -10,10 +15,10 @@ import {
   IDocumentWidget,
   DocumentWidget,
 } from '@jupyterlab/docregistry';
-import { Widget } from '@phosphor/widgets';
+
+import { Widget } from '@lumino/widgets';
 
 import { PythonBytecodePanel } from '../../lib/panel';
-import { CodeEditor } from '@jupyterlab/codeeditor';
 
 class WidgetFactory extends ABCWidgetFactory<IDocumentWidget> {
   protected createNewWidget(

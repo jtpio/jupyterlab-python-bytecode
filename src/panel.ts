@@ -1,7 +1,8 @@
 import {
-  ClientSession,
-  IClientSession,
+  SessionContext,
+  ISessionContext,
   IThemeManager,
+  sessionContextDialogs,
 } from '@jupyterlab/apputils';
 
 import { IObservableMap } from '@jupyterlab/observables';
@@ -16,19 +17,21 @@ import { DocumentRegistry } from '@jupyterlab/docregistry';
 
 import { ServiceManager } from '@jupyterlab/services';
 
-import { UUID, ReadonlyJSONObject } from '@phosphor/coreutils';
+import { pythonIcon } from '@jupyterlab/ui-components';
 
-import { Message } from '@phosphor/messaging';
+import { UUID, ReadonlyJSONObject } from '@lumino/coreutils';
 
-import { Panel } from '@phosphor/widgets';
+import { Message } from '@lumino/messaging';
+
+import { Panel } from '@lumino/widgets';
 
 import { flattenDeep, range } from 'lodash';
 
 import { BytecodeModel } from './model';
 
-import { BytecodeView } from './view';
+import { escapeComments } from './utils';
 
-const ICON_CLASS = 'jp-PythonIcon';
+import { BytecodeView } from './view';
 
 export class PythonBytecodePanel extends Panel {
   constructor(options: PythonBytecodePanel.IOptions) {
@@ -38,11 +41,10 @@ export class PythonBytecodePanel extends Panel {
     this.id = `${PythonBytecodePanel.NAMESPACE}-${count}`;
     this.title.label = 'Python Bytecode';
     this.title.closable = true;
-    this.title.icon = ICON_CLASS;
+    this.title.icon = pythonIcon;
 
-    let {
+    const {
       path,
-      name,
       serviceManager,
       docManager,
       themeManager,
@@ -50,7 +52,7 @@ export class PythonBytecodePanel extends Panel {
       selections,
     } = options;
 
-    let widget = docManager.findWidget(path);
+    const widget = docManager.findWidget(path);
     this._fileContext = docManager.contextForWidget(widget);
     this._docManager = docManager;
     this._themeManager = themeManager;
@@ -62,16 +64,17 @@ export class PythonBytecodePanel extends Panel {
       startNewKernel,
     } = userSettings;
 
-    name = name || widget.context.contentsModel.name;
+    const name = options.name || widget.context.contentsModel.name;
 
-    this._session = new ClientSession({
-      manager: serviceManager.sessions,
+    this._sessionContext = new SessionContext({
+      sessionManager: serviceManager.sessions,
+      specsManager: serviceManager.kernelspecs,
       path: startNewKernel ? UUID.uuid4() : path,
       name: name || `Python Bytecode`,
       type: 'console',
       kernelPreference: {
         language: kernelLanguagePreference as string,
-        autoStartDefault: kernelAutoStart as boolean,
+        autoStartDefault: (kernelAutoStart as boolean) ?? true,
       },
     });
 
@@ -86,18 +89,39 @@ export class PythonBytecodePanel extends Panel {
     this.addWidget(this._view);
   }
 
-  public async setup(): Promise<any> {
-    await this._session.initialize();
-    await this._session.ready;
+  get model(): BytecodeModel {
+    return this._model;
+  }
 
-    this.title.label = `${this._session.kernelDisplayName} Bytecode`;
-    this.title.caption = this._session.name;
+  get session(): ISessionContext {
+    return this._sessionContext;
+  }
 
-    await this._session.setName(
-      `${this._session.name} - ${this._session.kernelDisplayName}`,
-    );
+  dispose(): void {
+    // TODO: dispose session if last panel disposed?
+    this._removeListeners();
+    this._sessionContext.dispose();
+    this._view.dispose();
+    super.dispose();
+  }
 
-    await this._setupListeners();
+  async setup() {
+    const value = await this._sessionContext.initialize();
+    if (value) {
+      await sessionContextDialogs.selectKernel(this._sessionContext);
+    }
+
+    const { name, kernelDisplayName } = this._sessionContext;
+    if (!name.endsWith(kernelDisplayName)) {
+      await this._sessionContext.session?.setName(
+        `${name} - ${kernelDisplayName}`,
+      );
+    }
+
+    this.title.label = `${this._sessionContext.name} Bytecode`;
+    this.title.caption = this._sessionContext.name;
+
+    this._setupListeners();
 
     // do not block on first request
     this._getFileContent();
@@ -109,12 +133,12 @@ export class PythonBytecodePanel extends Panel {
     this.dispose();
   }
 
-  protected _setupListeners() {
+  private _setupListeners() {
     this._monitor.activityStopped.connect(this._getModelContent, this);
     this._fileContext.fileChanged.connect(this._getFileContent, this);
     this._fileContext.disposed.connect(this.dispose, this);
     this._selections.changed.connect(this._handleSelectionChanged, this);
-    this._session.kernelChanged.connect(this._handleKernelChanged, this);
+    this._sessionContext.kernelChanged.connect(this._handleKernelChanged, this);
 
     // TODO: make themeManager optional
     if (this._themeManager) {
@@ -122,7 +146,7 @@ export class PythonBytecodePanel extends Panel {
     }
   }
 
-  protected _removeListeners() {
+  private _removeListeners() {
     if (this._monitor) {
       this._monitor.activityStopped.disconnect(this._getModelContent, this);
       this._monitor.dispose();
@@ -137,52 +161,56 @@ export class PythonBytecodePanel extends Panel {
     if (this._selections) {
       this._selections.changed.disconnect(this._handleSelectionChanged, this);
     }
-    this._session.kernelChanged.disconnect(this._handleKernelChanged, this);
+    this._sessionContext.kernelChanged.disconnect(
+      this._handleKernelChanged,
+      this,
+    );
   }
 
-  protected _evaluateContent(content: string): Promise<any> {
-    const msg = this._model.formatKernelMessage(content);
+  private _evaluateContent(content: string) {
+    const msg = Private.formatKernelMessage(content);
     return this._execute(msg);
   }
 
-  protected async _getModelContent(): Promise<any> {
+  private async _getModelContent() {
     const content = this._fileContext.model.toString();
     return this._evaluateContent(content);
   }
 
-  protected async _getFileContent(): Promise<any> {
+  private async _getFileContent() {
     const path = this._fileContext.path;
     const file = await this._docManager.services.contents.get(path);
     return this._evaluateContent(file.content);
   }
 
-  protected async _execute(code: string): Promise<any> {
-    let future = this._session.kernel.requestExecute({ code }, true);
+  private async _execute(code: string) {
+    const future = this._sessionContext.session?.kernel?.requestExecute({
+      code,
+    });
     future.onIOPub = this._model.handleKernelMessage;
     return future.done;
   }
 
-  protected _changeTheme() {
+  private _changeTheme() {
     if (!this._themeManager) {
       return;
     }
     const isLight = this._themeManager.isLight(this._themeManager.theme);
     this._model.isLight = isLight;
-    this._model.notify();
   }
 
-  protected _handleKernelChanged() {
-    if (!this._session.kernel) {
+  private _handleKernelChanged() {
+    if (!this._sessionContext.session?.kernel) {
       this.dispose();
       return;
     }
   }
 
-  protected _handleSelectionChanged() {
+  private _handleSelectionChanged() {
     const selectedLines = flattenDeep<number>(
       this._selections.values().map(s =>
         s.map(e => {
-          let [start, end] = [e.start, e.end].sort((a, b) => a.line - b.line);
+          const [start, end] = [e.start, e.end].sort((a, b) => a.line - b.line);
           let [startLine, endLine] = [start.line, end.line];
           if (startLine != endLine && end.column === 0) {
             endLine--;
@@ -194,29 +222,12 @@ export class PythonBytecodePanel extends Panel {
     this.model.selectedLines = new Set(selectedLines);
   }
 
-  dispose(): void {
-    // TODO: dispose session if last panel disposed?
-    this._removeListeners();
-    this._session.dispose();
-    this._view.dispose();
-    this._model.dispose();
-    super.dispose();
-  }
-
-  get model(): BytecodeModel {
-    return this._model;
-  }
-
-  get session(): IClientSession {
-    return this._session;
-  }
-
   private _monitor: ActivityMonitor<any, any> | null;
   private _fileContext: DocumentRegistry.IContext<DocumentRegistry.IModel>;
   private _docManager: IDocumentManager;
   private _themeManager: IThemeManager;
   private _selections: IObservableMap<CodeEditor.ITextSelection[]>;
-  private _session: ClientSession;
+  private _sessionContext: SessionContext;
   private _model: BytecodeModel;
   private _view: BytecodeView;
 }
@@ -271,7 +282,7 @@ export namespace PythonBytecodePanel {
     /**
      * A kernel preference.
      */
-    kernelPreference?: IClientSession.IKernelPreference;
+    kernelPreference?: ISessionContext.IKernelPreference;
   }
 }
 
@@ -280,4 +291,13 @@ namespace Private {
    * Counter for new panels
    */
   export let count = 1;
+
+  /**
+   * Format the kernel message.
+   * @param code the content
+   */
+  export function formatKernelMessage(code: string): string {
+    const escapedContent = escapeComments(code);
+    return ['import dis', `dis.dis("""${escapedContent}""")`].join('\n');
+  }
 }

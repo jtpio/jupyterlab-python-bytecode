@@ -1,44 +1,10 @@
-import { VDomModel } from '@jupyterlab/apputils';
+import { IOutput } from '@jupyterlab/nbformat';
 
 import { KernelMessage } from '@jupyterlab/services';
 
-import { escapeComments } from './utils';
-import { nbformat } from '@jupyterlab/coreutils';
+import { ISignal, Signal } from '@lumino/signaling';
 
-export class BytecodeModel extends VDomModel {
-  constructor() {
-    super();
-  }
-
-  public formatKernelMessage(fileContent: string): string {
-    const escapedContent = escapeComments(fileContent);
-    const code = ['import dis', `dis.dis("""${escapedContent}""")`].join('\n');
-    return code;
-  }
-
-  public handleKernelMessage = (msg: KernelMessage.IIOPubMessage) => {
-    const msgType = msg.header.msg_type;
-    const message = msg.content as nbformat.IOutput;
-    switch (msgType) {
-      case 'stream':
-        this._output = message.text as string;
-        this._error = '';
-        this.notify();
-        break;
-      case 'error':
-        console.error(msg.content);
-        this._error = message.evalue as string;
-        this.notify();
-        break;
-      default:
-        break;
-    }
-  };
-
-  public notify(): void {
-    this.stateChanged.emit(void 0);
-  }
-
+export class BytecodeModel {
   get output(): string {
     return this._output;
   }
@@ -53,6 +19,7 @@ export class BytecodeModel extends VDomModel {
 
   set isLight(value: boolean) {
     this._isLight = value;
+    this._changed.emit(void 0);
   }
 
   get selectedLines(): Set<number> {
@@ -61,11 +28,35 @@ export class BytecodeModel extends VDomModel {
 
   set selectedLines(lines: Set<number>) {
     this._selectedLines = lines;
-    this.notify();
+    this._changed.emit(void 0);
   }
+
+  get changed(): ISignal<BytecodeModel, void> {
+    return this._changed;
+  }
+
+  handleKernelMessage = (msg: KernelMessage.IIOPubMessage) => {
+    const msgType = msg.header.msg_type;
+    const message = msg.content as IOutput;
+    switch (msgType) {
+      case 'stream':
+        this._output = message.text as string;
+        this._error = '';
+        this._changed.emit(void 0);
+        break;
+      case 'error':
+        console.error(msg.content);
+        this._error = message.evalue as string;
+        this._changed.emit(void 0);
+        break;
+      default:
+        break;
+    }
+  };
 
   private _output: string = '';
   private _error: string = '';
   private _isLight: boolean = true;
   private _selectedLines: Set<number>;
+  private _changed = new Signal<this, void>(this);
 }

@@ -39,7 +39,7 @@ describe('BytecodeView', () => {
     model.handleKernelMessage(msg as KernelMessage.IIOPubMessage);
     await framePromise();
 
-    let div = view.node.firstChild as HTMLElement;
+    const div = view.node.firstChild as HTMLElement;
     expect(div.nodeName.toLowerCase()).to.eq('div');
     expect(div.children).to.not.be.empty;
     expect(div.textContent).to.equal(KERNEL_CONTENT);
@@ -52,7 +52,7 @@ describe('BytecodeView', () => {
     model.handleKernelMessage(msg as KernelMessage.IIOPubMessage);
     await framePromise();
 
-    let div = view.node.firstChild as HTMLElement;
+    const div = view.node.firstChild as HTMLElement;
     expect(div.textContent).to.equal(KERNEL_ERROR);
     expect(div.className).to.contain('Error');
   });
