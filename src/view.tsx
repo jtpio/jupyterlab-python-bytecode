@@ -17,10 +17,19 @@ import { BytecodeModel } from './model';
 import { parseBytecode } from './utils';
 
 const BYTECODE_PANEL_CLASS = 'jp-RenderedPythonBytecode';
+
 const BYTECODE_ERROR_CLASS = 'jp-RenderedPythonBytecodeError';
+
 const BYTECODE_HIGHLIGHT = 'jp-HighlightBytecode';
 
+/**
+ * A view to display bytecode from the kernel.
+ */
 export class BytecodeView extends ReactWidget {
+  /**
+   * Instantiate a new BytecodeView.
+   * @param model The bytecode model.
+   */
   constructor(model: BytecodeModel) {
     super();
     this.id = 'PythonBytecode';
@@ -29,6 +38,9 @@ export class BytecodeView extends ReactWidget {
     this.addClass(BYTECODE_PANEL_CLASS);
   }
 
+  /**
+   * Render the BytecodeView component.
+   */
   render() {
     if (this._model.error) {
       return <div className={BYTECODE_ERROR_CLASS}>{this._model.error}</div>;

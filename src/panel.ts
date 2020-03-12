@@ -3,6 +3,7 @@ import {
   ISessionContext,
   IThemeManager,
   sessionContextDialogs,
+  DOMUtils,
 } from '@jupyterlab/apputils';
 
 import { IObservableMap } from '@jupyterlab/observables';
@@ -33,12 +34,19 @@ import { escapeComments } from './utils';
 
 import { BytecodeView } from './view';
 
+/**
+ * The panel that shows the Bytecode preview
+ */
 export class PythonBytecodePanel extends Panel {
+  /**
+   * Constructor for the panel.
+   *
+   * @param options: the instantiation options.
+   */
   constructor(options: PythonBytecodePanel.IOptions) {
     super();
 
-    const count = Private.count++;
-    this.id = `${PythonBytecodePanel.NAMESPACE}-${count}`;
+    this.id = DOMUtils.createDomID();
     this.title.label = 'Python Bytecode';
     this.title.closable = true;
     this.title.icon = pythonIcon;
@@ -89,14 +97,23 @@ export class PythonBytecodePanel extends Panel {
     this.addWidget(this._view);
   }
 
+  /**
+   * Get the model.
+   */
   get model(): BytecodeModel {
     return this._model;
   }
 
-  get session(): ISessionContext {
+  /**
+   * Get the session context.
+   */
+  get sessionContext(): ISessionContext {
     return this._sessionContext;
   }
 
+  /**
+   * Dispose the panel.
+   */
   dispose(): void {
     // TODO: dispose session if last panel disposed?
     this._removeListeners();
@@ -105,6 +122,9 @@ export class PythonBytecodePanel extends Panel {
     super.dispose();
   }
 
+  /**
+   * Setup the panel.
+   */
   async setup() {
     const value = await this._sessionContext.initialize();
     if (value) {
@@ -128,11 +148,18 @@ export class PythonBytecodePanel extends Panel {
     this._changeTheme();
   }
 
+  /**
+   * Handle onCloseRequest messages.
+   * @param msg The message
+   */
   protected onCloseRequest(msg: Message): void {
     super.onCloseRequest(msg);
     this.dispose();
   }
 
+  /**
+   * Setup the listeners.
+   */
   private _setupListeners() {
     this._monitor.activityStopped.connect(this._getModelContent, this);
     this._fileContext.fileChanged.connect(this._getFileContent, this);
@@ -146,6 +173,9 @@ export class PythonBytecodePanel extends Panel {
     }
   }
 
+  /**
+   * Remove the listeners.
+   */
   private _removeListeners() {
     if (this._monitor) {
       this._monitor.activityStopped.disconnect(this._getModelContent, this);
@@ -167,22 +197,36 @@ export class PythonBytecodePanel extends Panel {
     );
   }
 
+  /**
+   * Evaluate the content of the document.
+   * @param content the content to evaluate
+   */
   private _evaluateContent(content: string) {
     const msg = Private.formatKernelMessage(content);
     return this._execute(msg);
   }
 
+  /**
+   * Get the content of the model.
+   */
   private async _getModelContent() {
     const content = this._fileContext.model.toString();
     return this._evaluateContent(content);
   }
 
+  /**
+   * Get the content of the file.
+   */
   private async _getFileContent() {
     const path = this._fileContext.path;
     const file = await this._docManager.services.contents.get(path);
     return this._evaluateContent(file.content);
   }
 
+  /**
+   * Execute code.
+   * @param code The code to execute
+   */
   private async _execute(code: string) {
     const future = this._sessionContext.session?.kernel?.requestExecute({
       code,
@@ -191,6 +235,9 @@ export class PythonBytecodePanel extends Panel {
     return future.done;
   }
 
+  /**
+   * Change the theme to the current theme.
+   */
   private _changeTheme() {
     if (!this._themeManager) {
       return;
@@ -199,6 +246,9 @@ export class PythonBytecodePanel extends Panel {
     this._model.isLight = isLight;
   }
 
+  /**
+   * Handle a kernel changed event.
+   */
   private _handleKernelChanged() {
     if (!this._sessionContext.session?.kernel) {
       this.dispose();
@@ -206,6 +256,9 @@ export class PythonBytecodePanel extends Panel {
     }
   }
 
+  /**
+   * Handle a seleection changed event.
+   */
   private _handleSelectionChanged() {
     const selectedLines = flattenDeep<number>(
       this._selections.values().map(s =>
@@ -232,9 +285,10 @@ export class PythonBytecodePanel extends Panel {
   private _view: BytecodeView;
 }
 
+/**
+ * A namespace for PythonBytecodePanel statics.
+ */
 export namespace PythonBytecodePanel {
-  export const NAMESPACE = 'PythonBytecodePanel';
-
   export interface IOptions {
     /**
      * The service manager used to get a list
@@ -287,11 +341,6 @@ export namespace PythonBytecodePanel {
 }
 
 namespace Private {
-  /**
-   * Counter for new panels
-   */
-  export let count = 1;
-
   /**
    * Format the kernel message.
    * @param code the content
